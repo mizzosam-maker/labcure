@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "node scripts/seed-product.js"
+    "seed": "node scripts/seed-product.js",
+    "migrate:categories": "node scripts/migrate-categories.js",
+    "sync:categories": "node scripts/sync-category-counts.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

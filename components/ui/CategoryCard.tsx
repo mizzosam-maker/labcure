@@ -1,4 +1,4 @@
-import Link from "next/link";
+/*import Link from "next/link";
 import Image from "next/image";
 
 interface CategoryCardProps {
@@ -17,7 +17,7 @@ export default function CategoryCard({
       href={`/products?category=${encodeURIComponent(name)}`}
       className="block group"
     >
-      {/* Image / Placeholder */}
+      {/* Image / Placeholder *
       <div className="relative h-48 rounded-xl overflow-hidden mb-3 border border-gray-light bg-background">
 
         {image ? (
@@ -33,19 +33,59 @@ export default function CategoryCard({
           </div>
         )}
 
-        {/* subtle overlay for professional medical feel */}
+        {/* subtle overlay for professional medical feel *
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
       </div>
 
-      {/* Name */}
+      {/* Name *
       <h3 className="font-semibold text-center text-foreground group-hover:text-primary transition">
         {name}
       </h3>
 
-      {/* Count */}
+      {/* Count *
       <p className="text-sm text-gray-dark text-center">
         {count} products
       </p>
+    </Link>
+  );
+}*/
+
+// components/ui/CategoryCard.tsx
+import Link from "next/link";
+import Image from "next/image";
+
+interface CategoryCardProps {
+  name: string;
+  slug: string;
+  count: number;
+  image?: string;
+}
+
+export default function CategoryCard({ name, slug, count, image }: CategoryCardProps) {
+  return (
+    <Link href={`/categories/${slug}`} className="group">
+      <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+        <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+          {image ? (
+            <Image
+              src={image}
+              alt={name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-primary/10">
+              <span className="text-4xl">🔬</span>
+            </div>
+          )}
+        </div>
+        <div className="p-4 text-center">
+          <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">
+            {name}
+          </h3>
+          <p className="text-sm text-gray-500">{count} products</p>
+        </div>
+      </div>
     </Link>
   );
 }
