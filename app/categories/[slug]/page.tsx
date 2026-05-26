@@ -1,5 +1,5 @@
 // app/categories/[slug]/page.tsx
-import { notFound } from "next/navigation";
+/*import { notFound } from "next/navigation";
 import Link from "next/link";
 import connectDB from "@/lib/mongodb";
 import Category from "@/lib/models/Category";
@@ -59,7 +59,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   
   return (
     <div className="bg-background min-h-screen">
-      {/* Category Header */}
+      {/* Category Header *
       <section className="relative h-64 bg-primary-dark text-white">
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative container mx-auto px-4 h-full flex flex-col justify-center">
@@ -69,7 +69,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </section>
       
-      {/* Products Grid */}
+      {/* Products Grid *
       <section className="container mx-auto px-4 py-12">
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -91,4 +91,61 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </section>
     </div>
   );
+}*/
+
+// app/api/categories/[slug]/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import Category from "@/lib/models/Category";
+import Product from "@/lib/models/Product";
+
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ slug: string }> }
+) {
+  try {
+    await connectDB();
+    
+    // Await the params promise
+    const { slug } = await context.params;
+
+    const category = await Category.findOne({ slug, isActive: true }).lean();
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      );
+    }
+
+    const products = await Product.find({ category: category.name })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Serialize MongoDB documents
+    const serializedCategory = {
+      ...category,
+      _id: category._id.toString(),
+      createdAt: category.createdAt?.toISOString(),
+      updatedAt: category.updatedAt?.toISOString(),
+    };
+
+    const serializedProducts = products.map((product) => ({
+      ...product,
+      _id: product._id.toString(),
+      createdAt: product.createdAt?.toISOString(),
+      updatedAt: product.updatedAt?.toISOString(),
+    }));
+
+    return NextResponse.json({
+      category: serializedCategory,
+      products: serializedProducts,
+    });
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch category" },
+      { status: 500 }
+    );
+  }
 }
