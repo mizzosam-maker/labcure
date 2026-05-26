@@ -216,7 +216,7 @@ Total: KSh ${(product?.price || 0) * quantity}`;
   );
 }*/
 
-"use client";
+/*"use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -337,7 +337,7 @@ Total: KSh ${(product?.price || 0) * quantity}`;
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-        {/* ✅ IMAGE SECTION (FIXED) */}
+        {/* ✅ IMAGE SECTION (FIXED) *
         <div className="relative h-96 md:h-[600px] bg-[#f6e9a6] rounded-lg overflow-hidden flex items-center justify-center">
 
           {isValidImage ? (
@@ -359,7 +359,7 @@ Total: KSh ${(product?.price || 0) * quantity}`;
           )}
         </div>
 
-        {/* PRODUCT INFO */}
+        {/* PRODUCT INFO *
         <div>
           <p className="text-[#e8b924] font-medium mb-2">
             {product.category}
@@ -379,7 +379,7 @@ Total: KSh ${(product?.price || 0) * quantity}`;
             </p>
           )}
 
-          {/* VARIANTS */}
+          {/* VARIANTS *
           {product.variants && product.variants.length > 0 && (
             <div className="mb-6">
               <h3 className="font-medium mb-2">Variants</h3>
@@ -401,12 +401,12 @@ Total: KSh ${(product?.price || 0) * quantity}`;
             </div>
           )}
 
-          {/* STOCK */}
+          {/* STOCK *
           <p className={`mb-6 ${product.stock < 5 ? "text-red-500" : "text-green-600"}`}>
             {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
           </p>
 
-          {/* QUANTITY */}
+          {/* QUANTITY *
           <div className="flex items-center space-x-4 mb-6">
             <span className="font-medium">Quantity:</span>
 
@@ -434,7 +434,7 @@ Total: KSh ${(product?.price || 0) * quantity}`;
             </div>
           </div>
 
-          {/* ACTIONS */}
+          {/* ACTIONS *
           <div className="space-y-3">
             <button
               onClick={handleAddToCart}
@@ -449,6 +449,260 @@ Total: KSh ${(product?.price || 0) * quantity}`;
               onClick={handleWhatsAppOrder}
               disabled={product.stock === 0}
               className="w-full bg-[#25D366] text-white py-3 rounded-lg font-semibold hover:bg-[#128C7E] transition disabled:opacity-50 flex items-center justify-center space-x-2"
+            >
+              <MessageCircle className="w-5 h-5" />
+              <span>Order via WhatsApp</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}*/
+
+"use client"
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+import { useCart } from "@/context/CartContext";
+import { ShoppingCart, MessageCircle, Minus, Plus } from "lucide-react";
+import Link from "next/link";
+
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  category: string;
+  description?: string;
+  images: string[];
+  variants?: string[];
+  stock: number;
+}
+
+export default function ProductDetailPage() {
+  const { id } = useParams();
+
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState<string>("");
+
+  const [imgSrc, setImgSrc] = useState("");
+  const [hasError, setHasError] = useState(false);
+
+  const { addToCart } = useCart();
+
+  // ✅ SAFE VARIANTS (FIX FOR TS ERROR)
+  const variants = product?.variants ?? [];
+
+  useEffect(() => {
+    fetchProduct();
+  }, [id]);
+
+  const fetchProduct = async () => {
+    try {
+      const res = await fetch(`/api/products/${id}`);
+      const data: Product = await res.json();
+
+      setProduct(data);
+
+      const firstImage = data?.images?.[0] || "";
+      setImgSrc(firstImage);
+
+      if (data?.variants?.length) {
+        setSelectedVariant(data.variants[0]);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageError = () => {
+    if (!hasError) {
+      setHasError(true);
+      setImgSrc("/images/placeholder.png");
+    }
+  };
+
+  const isValidImage =
+    imgSrc && imgSrc !== "/images/placeholder.png";
+
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    addToCart({
+      productId: product._id,
+      name: product.name,
+      price: product.price,
+      quantity,
+      image: imgSrc || "/images/placeholder.png",
+    });
+  };
+
+  const handleWhatsAppOrder = () => {
+    if (!product) return;
+
+    const phone = "2547XXXXXXXX";
+
+    const message = `Hello, I want to order:
+Product: ${product.name}
+Price: KSh ${product.price}
+Quantity: ${quantity}
+${selectedVariant ? `Variant: ${selectedVariant}` : ""}
+Total: KSh ${product.price * quantity}`;
+
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold mb-4">Product not found</h1>
+        <Link href="/products" className="text-primary hover:text-primary-light">
+          Back to products
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      {/* BACK */}
+      <div className="mb-4">
+        <Link href="/products" className="text-primary hover:text-primary-light">
+          ← Back to products
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        {/* IMAGE */}
+        <div className="relative h-96 md:h-[600px] bg-gray-light/30 rounded-lg overflow-hidden flex items-center justify-center">
+          {isValidImage ? (
+            <Image
+              src={imgSrc}
+              alt={product.name}
+              fill
+              className="object-contain"
+              onError={handleImageError}
+            />
+          ) : (
+            <Image
+              src="/images/placeholder.png"
+              alt="placeholder"
+              width={180}
+              height={180}
+              className="opacity-60 grayscale"
+            />
+          )}
+        </div>
+
+        {/* DETAILS */}
+        <div>
+          <p className="text-secondary font-medium mb-2">
+            {product.category}
+          </p>
+
+          <h1 className="text-3xl font-bold mb-4">
+            {product.name}
+          </h1>
+
+          <p className="text-2xl font-bold text-primary mb-4">
+            KSh {product.price.toLocaleString()}
+          </p>
+
+          {product.description && (
+            <p className="text-gray-dark mb-6">
+              {product.description}
+            </p>
+          )}
+
+          {/* VARIANTS (SAFE) */}
+          {variants.length > 0 && (
+            <div className="mb-6">
+              <h3 className="font-medium mb-2">Variants</h3>
+
+              <div className="flex flex-wrap gap-2">
+                {variants.map((variant) => (
+                  <button
+                    key={variant}
+                    onClick={() => setSelectedVariant(variant)}
+                    className={`px-4 py-2 border rounded-lg transition ${
+                      selectedVariant === variant
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-gray-light hover:border-primary"
+                    }`}
+                  >
+                    {variant}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* STOCK */}
+          <p className={`mb-6 ${product.stock < 5 ? "text-red-500" : "text-green-600"}`}>
+            {product.stock > 0
+              ? `${product.stock} in stock`
+              : "Out of stock"}
+          </p>
+
+          {/* QUANTITY */}
+          <div className="flex items-center space-x-4 mb-6">
+            <span className="font-medium">Quantity:</span>
+
+            <div className="flex items-center border border-gray-light rounded-lg">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="px-3 py-2 hover:bg-gray-light/30 transition"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+
+              <span className="px-4 py-2 border-x border-gray-light">
+                {quantity}
+              </span>
+
+              <button
+                onClick={() =>
+                  setQuantity(Math.min(product.stock, quantity + 1))
+                }
+                className="px-3 py-2 hover:bg-gray-light/30 transition"
+                disabled={quantity >= product.stock}
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* ACTIONS */}
+          <div className="space-y-3">
+            <button
+              onClick={handleAddToCart}
+              disabled={product.stock === 0}
+              className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition disabled:opacity-50 flex items-center justify-center space-x-2"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              <span>Add to Cart</span>
+            </button>
+
+            <button
+              onClick={handleWhatsAppOrder}
+              disabled={product.stock === 0}
+              className="w-full bg-secondary text-white py-3 rounded-lg font-semibold hover:bg-secondary-dark transition disabled:opacity-50 flex items-center justify-center space-x-2"
             >
               <MessageCircle className="w-5 h-5" />
               <span>Order via WhatsApp</span>
