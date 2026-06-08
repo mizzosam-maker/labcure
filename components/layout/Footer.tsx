@@ -102,7 +102,7 @@ export default function Footer() {
                 <div className="bg-[var(--primary)]/10 p-2 rounded-lg">
                   <Phone className="w-4 h-4 text-[var(--primary)]" />
                 </div>
-                <span>+254 7XX XXX XXX</span>
+                <span>+254 713 577 881</span>
               </li>
 
               <li className="flex items-center gap-3">
@@ -116,7 +116,7 @@ export default function Footer() {
                 <div className="bg-[var(--accent)]/10 p-2 rounded-lg">
                   <MapPin className="w-4 h-4 text-[var(--accent)]" />
                 </div>
-                <span>Nairobi, Kenya</span>
+                <span>Kisumu, Kenya</span>
               </li>
 
             </ul>
