@@ -1,84 +1,11 @@
-/*"use client";
-
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { CheckCircle, MessageCircle } from "lucide-react";
-
-function SuccessContent() {
-  const searchParams = useSearchParams();
-  const whatsappUrl = searchParams.get("whatsapp");
-
-  return (
-    <div className="container mx-auto px-4 py-16 text-center text-[var(--foreground)]">
-
-      <div className="max-w-md mx-auto bg-[var(--background)] border border-[var(--gray-light)] rounded-2xl p-8 shadow-sm">
-
-        {/* Success Icon *
-        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-
-        {/* Title *
-        <h1 className="text-2xl font-bold mb-3">
-          Order Placed Successfully!
-        </h1>
-
-        {/* Subtitle *
-        <p className="text-[var(--gray-dark)] mb-8 text-sm leading-relaxed">
-          Thank you for your order. We’ll contact you shortly to confirm the details.
-        </p>
-
-        {/* WhatsApp Button *
-        {whatsappUrl && (
-          <a
-            href={decodeURIComponent(whatsappUrl)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition mb-4 w-full"
-          >
-            <MessageCircle className="w-5 h-5" />
-            <span>View Order on WhatsApp</span>
-          </a>
-        )}
-
-        {/* Continue Shopping *
-        <Link
-          href="/products"
-          className="inline-block w-full bg-[var(--primary)] text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
-        >
-          Continue Shopping
-        </Link>
-
-      </div>
-    </div>
-  );
-}
-
-export default function SuccessPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="container mx-auto px-4 py-16 text-center">
-          <div className="max-w-md mx-auto animate-pulse space-y-4">
-            <div className="w-16 h-16 bg-[var(--gray-light)] rounded-full mx-auto" />
-            <div className="h-6 bg-[var(--gray-light)] rounded w-3/4 mx-auto" />
-            <div className="h-4 bg-[var(--gray-light)] rounded w-full mx-auto" />
-          </div>
-        </div>
-      }
-    >
-      <SuccessContent />
-    </Suspense>
-  );
-}*/
-
-/*"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { CheckCircle, MessageCircle, ShoppingBag, ArrowRight } from "lucide-react";
+import { CheckCircle, MessageCircle, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
-export default function CheckoutSuccessPage() {
+export default function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [countdown, setCountdown] = useState(5);
@@ -106,13 +33,12 @@ export default function CheckoutSuccessPage() {
       router.push("/");
     }
   }, [whatsappUrl, router]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
           
-          {/* Success Icon *
+          {/* Success Icon */}
           <div className="mb-6">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto animate-bounce">
               <CheckCircle className="w-12 h-12 text-green-600" />
@@ -127,7 +53,7 @@ export default function CheckoutSuccessPage() {
             Thank you for your order. You'll be redirected to WhatsApp to complete your inquiry.
           </p>
 
-          {/* Countdown *
+          {/* Countdown */}
           <div className="mb-6">
             <div className="text-4xl font-bold text-green-600 mb-2">
               {countdown}
@@ -143,7 +69,7 @@ export default function CheckoutSuccessPage() {
             </div>
           </div>
 
-          {/* Manual Redirect Button *
+          {/* Manual Redirect Button */}
           {whatsappUrl && (
             <a
               href={decodeURIComponent(whatsappUrl)}
@@ -162,27 +88,12 @@ export default function CheckoutSuccessPage() {
             Continue Shopping
           </Link>
 
-          {/* Note *
+          {/* Note */}
           <p className="text-xs text-gray-400 mt-6">
             If WhatsApp doesn't open automatically, click the button above.
           </p>
         </div>
       </div>
     </div>
-  );
-}*/
-
-
-
-"use client";
-
-import { Suspense } from "react";
-import CheckoutSuccessContent from "./CheckoutSuccessContent";
-
-export default function CheckoutSuccessPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CheckoutSuccessContent />
-    </Suspense>
   );
 }
